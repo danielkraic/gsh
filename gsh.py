@@ -6,24 +6,6 @@ from dialog import Dialog
 import subprocess
 
 
-def get_servers(patterns):
-    """
-    get list of servers that match patterns
-
-    :param patterns: server name patterns
-    :return: list of servers
-    """
-    if len(patterns) == 0:
-        return []
-
-    matched_servers = []
-    for server in server_list.all_servers:
-        if server.match(patterns):
-            matched_servers.append(server)
-
-    return matched_servers
-
-
 def choose_server(servers):
     """
     choose server from dialog menu
@@ -85,7 +67,7 @@ if __name__ == '__main__':
         print(usageString)
         sys.exit(0)
 
-    matched_servers = get_servers(args)
+    matched_servers = [server for server in server_list.all_servers if server.match(args)]
 
     if len(matched_servers) == 0:
         print("no server matched")
