@@ -17,11 +17,10 @@ def choose_server(servers):
         return None
 
     servers_list = []
-    for s in matched_servers:
-        if scpFlag:
-            servers_list.append(tuple([str(len(servers_list)), s.name + ": " + s.get_scp_string()]))
-        else:
-            servers_list.append(tuple([str(len(servers_list)), s.name + ": " + s.get_ssh_string()]))
+    if scpFlag:
+        servers_list = [(str(num), s.name + ": " + s.get_scp_string()) for num, s in enumerate(matched_servers)]
+    else:
+        servers_list = [(str(num), s.name + ": " + s.get_ssh_string()) for num, s in enumerate(matched_servers)]
 
     d = Dialog(dialog="dialog")
     code, server_tag = d.menu("Select server", choices=servers_list)
@@ -46,7 +45,8 @@ def connect(server, scp):
         command = server.get_ssh_string()
 
     print("command: ", command)
-    subprocess.call(command, shell=True)
+    if not scpFlag:
+        subprocess.call(command, shell=True)
 
 
 if __name__ == '__main__':
