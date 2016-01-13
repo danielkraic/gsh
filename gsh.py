@@ -7,24 +7,6 @@ import subprocess
 import server_list
 
 
-def get_servers(patterns):
-    """
-    get list of servers that match patterns
-
-    :param patterns: server name patterns
-    :return: list of servers
-    """
-    if len(patterns) == 0:
-        return []
-
-    matched_servers = []
-    for server in server_list.all_servers:
-        if server.match(patterns):
-            matched_servers.append(server)
-
-    return matched_servers
-
-
 def choose_server(servers):
     """
     choose server from dialog menu
@@ -36,11 +18,10 @@ def choose_server(servers):
         return None
 
     servers_list = []
-    for s in matched_servers:
-        if scpFlag:
-            servers_list.append(tuple([str(len(servers_list)), s.name + ": " + s.get_scp_string()]))
-        else:
-            servers_list.append(tuple([str(len(servers_list)), s.name + ": " + s.get_ssh_string()]))
+    if scpFlag:
+        servers_list = [(str(num), s.name + ": " + s.get_scp_string()) for num, s in enumerate(matched_servers)]
+    else:
+        servers_list = [(str(num), s.name + ": " + s.get_ssh_string()) for num, s in enumerate(matched_servers)]
 
     d = Dialog(dialog="dialog")
     code, server_tag = d.menu("Select server", choices=servers_list)
@@ -79,7 +60,7 @@ if __name__ == '__main__':
         print(usageString)
         sys.exit(0)
 
-    matched_servers = get_servers(args)
+    matched_servers = [server for server in server_list.all_servers if server.match(args)]
 
     if len(matched_servers) == 0:
         print("no server matched")
@@ -92,7 +73,7 @@ if __name__ == '__main__':
         else:
             selected_server = choose_server(matched_servers)
             if selected_server is None:
-                sys.exit(1)
+                sys.exit(0)
 
             print(selected_server.get_scp_string())
     else:
@@ -102,6 +83,6 @@ if __name__ == '__main__':
         else:
             selected_server = choose_server(matched_servers)
             if selected_server is None:
-                sys.exit(1)
+                sys.exit(0)
 
             connect(selected_server)
