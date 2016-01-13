@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 
 import sys
-import server_list
+import os
 from dialog import Dialog
 import subprocess
+import server_list
 
 
 def get_servers(patterns):
@@ -50,25 +51,18 @@ def choose_server(servers):
     return matched_servers[int(server_tag)]
 
 
-def connect(server, scp):
+def connect(server):
     """
-    execute ssh/scp command
+    execute ssh command
 
     :param server: server to connect
-    :param scp: connect with scp if True
     """
-    command = ''
-    if scp:
-        command = server.get_scp_string()
-    else:
-        command = server.get_ssh_string()
-
-    print("command: ", command)
-    subprocess.call(command, shell=True)
+    print("executing command: ", server.get_ssh_string())
+    subprocess.call(server.get_ssh_string(), shell=True)
 
 
 if __name__ == '__main__':
-    usageString = "Usage: {0} [-c] servername".format(sys.argv[0])
+    usageString = "Usage: {0} [-c] servername".format(os.path.basename(sys.argv[0]))
 
     if len(sys.argv) == 1:
         print(usageString)
@@ -89,13 +83,25 @@ if __name__ == '__main__':
 
     if len(matched_servers) == 0:
         print("no server matched")
-        sys.exit(0)
+        sys.exit(1)
 
-    if len(matched_servers) == 1:
-        connect(matched_servers[0], scpFlag)
+    if scpFlag:
+        # only print scp command
+        if len(matched_servers) == 1:
+            print(matched_servers[0].get_scp_string())
+        else:
+            selected_server = choose_server(matched_servers)
+            if selected_server is None:
+                sys.exit(1)
+
+            print(selected_server.get_scp_string())
     else:
-        selected_server = choose_server(matched_servers)
-        if selected_server is None:
-            sys.exit(1)
+        # connect to selected server with ssh
+        if len(matched_servers) == 1:
+            connect(matched_servers[0])
+        else:
+            selected_server = choose_server(matched_servers)
+            if selected_server is None:
+                sys.exit(1)
 
-        connect(selected_server, scpFlag)
+            connect(selected_server)

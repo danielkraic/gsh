@@ -21,7 +21,10 @@ class Server:
         return "scp -P {0} {1}@{2} # {3}".format(self.port, self.user, self.host, self.name)
 
     def get_pretty_string(self):
-        return "{0}: ssh -p {1} {2}@{3}".format(self.name, self.port, self.user, self.host)
+        port_str = ''
+        if self.port != Server.default_port:
+            port_str = '-p {0} '.format(self.port)
+        return "{0}: ssh {1}{2}@{3}".format(self.name, port_str, self.user, self.host)
 
     def match(self, patters):
         all_matched = True
