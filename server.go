@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -47,7 +45,7 @@ func (s *Server) normalize(defaultUsername string, defaultPort uint) {
 }
 
 func (s *Server) match(pattern string) bool {
-	return strings.Contains(s.Name, pattern) || strings.Contains(s.Hostname, pattern) || strings.Contains(s.Username, pattern)
+	return pattern != "" && (strings.Contains(s.Name, pattern) || strings.Contains(s.Hostname, pattern) || strings.Contains(s.Username, pattern))
 }
 
 func (s *Server) matchAll(patterns []string) bool {
@@ -58,22 +56,4 @@ func (s *Server) matchAll(patterns []string) bool {
 	}
 
 	return true
-}
-
-func readConfig(configFile string, defaultUsername string, defaultPort uint) ([]Server, error) {
-	fileData, err := ioutil.ReadFile(configFile)
-	if err != nil {
-		return nil, err
-	}
-
-	var servers []Server
-	if err = json.Unmarshal(fileData, &servers); err != nil {
-		return nil, err
-	}
-
-	for i := 0; i < len(servers); i++ {
-		servers[i].normalize(defaultUsername, defaultPort)
-	}
-
-	return servers, nil
 }

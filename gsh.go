@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	defaultCOnfigPath = ".config/gsh.json"
+	defaultConfigPath = ".config/gsh.json"
 )
 
 var args struct {
@@ -26,7 +26,7 @@ func main() {
 	}
 
 	// default arguments
-	args.Config = path.Join(usr.HomeDir, defaultCOnfigPath)
+	args.Config = path.Join(usr.HomeDir, defaultConfigPath)
 	args.PrintOnly = false
 
 	arg.MustParse(&args)
