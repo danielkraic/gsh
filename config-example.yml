@@ -1,0 +1,14 @@
+---
+- server:
+  name: server1
+  username: user1
+  hostname: server1.localhost
+  port: 22
+- server:
+  name: server2
+  username: user2
+  hostname: server2.localhost
+- server:
+  name: server3
+  hostname: server3.localhost
+

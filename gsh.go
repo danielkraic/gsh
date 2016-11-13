@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	defaultConfigPath = ".config/gsh.json"
+	defaultConfigPath = ".config/gsh.yml"
 )
 
 var args struct {

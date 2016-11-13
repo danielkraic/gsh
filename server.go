@@ -9,14 +9,35 @@ import (
 
 // Server type with host, user and port info
 type Server struct {
-	Name     string `json:"name"`
-	Username string `json:"username,omitempty"`
-	Hostname string `json:"hostname"`
-	Port     uint   `json:"port,omitempty"`
+	Name     string `yaml:"name"`
+	Username string `yaml:"username,omitempty"`
+	Hostname string `yaml:"hostname"`
+	Port     uint   `yaml:"port,omitempty"`
 }
 
 func (s *Server) String() string {
-	return fmt.Sprintf("Name: %s, %s@%s:%d", s.Name, s.Username, s.Hostname, s.Port)
+	return fmt.Sprintf("%s, %s@%s:%d", s.Name, s.Username, s.Hostname, s.Port)
+}
+
+func (s *Server) validate() error {
+	var err string
+	if len(s.Name) == 0 {
+		err = err + "Name is empty. "
+	}
+
+	if len(s.Username) == 0 {
+		err = err + "Username is empty. "
+	}
+
+	if len(s.Hostname) == 0 {
+		err = err + "Hostname is empty. "
+	}
+
+	if len(err) > 0 {
+		return fmt.Errorf("Invalid configuration file. Error: %s Server: %s", err, s.String())
+	}
+
+	return nil
 }
 
 func (s *Server) getConnectionString() string {

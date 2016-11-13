@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"gopkg.in/yaml.v2"
 	"io/ioutil"
 )
 
@@ -12,12 +12,16 @@ func readConfig(configFile string, defaultUsername string, defaultPort uint) ([]
 	}
 
 	var servers []Server
-	if err = json.Unmarshal(fileData, &servers); err != nil {
+	if err = yaml.Unmarshal(fileData, &servers); err != nil {
 		return nil, err
 	}
 
 	for i := 0; i < len(servers); i++ {
 		servers[i].normalize(defaultUsername, defaultPort)
+
+		if err = servers[i].validate(); err != nil {
+			return nil, err
+		}
 	}
 
 	return servers, nil

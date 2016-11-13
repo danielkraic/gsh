@@ -9,13 +9,13 @@ type TestingPair struct {
 
 func TestServerString(t *testing.T) {
 	list := []TestingPair{
-		{Server{"", "", "", 0}, "Name: , @:0"},
-		{Server{"name", "", "", 0}, "Name: name, @:0"},
-		{Server{"", "user", "", 0}, "Name: , user@:0"},
-		{Server{"", "", "host", 0}, "Name: , @host:0"},
-		{Server{"", "", "", 2200}, "Name: , @:2200"},
-		{Server{"name", "user", "host", 0}, "Name: name, user@host:0"},
-		{Server{"name", "user", "host", 22}, "Name: name, user@host:22"},
+		{Server{"", "", "", 0}, ", @:0"},
+		{Server{"name", "", "", 0}, "name, @:0"},
+		{Server{"", "user", "", 0}, ", user@:0"},
+		{Server{"", "", "host", 0}, ", @host:0"},
+		{Server{"", "", "", 2200}, ", @:2200"},
+		{Server{"name", "user", "host", 0}, "name, user@host:0"},
+		{Server{"name", "user", "host", 22}, "name, user@host:22"},
 	}
 
 	for _, pair := range list {
