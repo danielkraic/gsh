@@ -5,8 +5,6 @@ import (
 	"os/user"
 	"path"
 
-	"fmt"
-
 	"github.com/alexflint/go-arg"
 )
 
@@ -66,13 +64,10 @@ func main() {
 
 	// handle matched servers
 	if uploading {
-		fmt.Print("upload\n")
 		upload(args.LocalPath, args.UploadPath, matched, args.PrintOnly)
 	} else if downloading {
-		fmt.Print("donload\n")
 		download(args.DownloadPath, args.LocalPath, matched, args.PrintOnly)
 	} else {
-		fmt.Print("connect\n")
 		connect(matched, args.PrintOnly)
 	}
 }

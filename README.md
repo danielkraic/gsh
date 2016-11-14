@@ -22,17 +22,14 @@ confiruration file `~/.config/gsh.yml`
 
 ```yaml
 ---
-- server:
-  name: server1
+- name: myserver1
   username: user1
   hostname: server1.localhost
   port: 22
-- server:
-  name: server2
+- name: myserver2
   username: user2
   hostname: server2.localhost
-- server:
-  name: server3
+- name: myserver3
   hostname: server3.localhost
 ```
 
@@ -49,7 +46,7 @@ gsh -c custom_config.yml -p
 # Connect to server (choose server using single pattern)
 gsh myserver1
 # Connect to server (choose server using multiple patterns)
-gsh myserver1 user2
+gsh myserver1 user1
 
 # Upload file to server
 gsh -f src_file.txt -u dest_path.txt myserver1
@@ -60,7 +57,7 @@ gsh -d remote_path.txt -f dest_file.txt myserver1
 # Print ssh command to server (choose server using single pattern)
 gsh -p myserver1
 # Print ssh command to server (choose server using multiple patterns)
-gsh -p myserver1
+gsh -p myserver1 user1
 # Print scp command to upload file to server
 gsh -p -f src_file.txt -u dest_path.txt myserver1
 # Print scp command to download file from server
