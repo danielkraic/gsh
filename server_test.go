@@ -30,13 +30,13 @@ func TestServerString(t *testing.T) {
 
 func TestServerConnectionString(t *testing.T) {
 	list := []TestingPair{
-		{Server{"", "", "", 0}, "ssh -p 0 @ # "},
-		{Server{"name", "", "", 0}, "ssh -p 0 @ # name"},
-		{Server{"", "user", "", 0}, "ssh -p 0 user@ # "},
-		{Server{"", "", "host", 0}, "ssh -p 0 @host # "},
-		{Server{"", "", "", 2200}, "ssh -p 2200 @ # "},
-		{Server{"name", "user", "host", 0}, "ssh -p 0 user@host # name"},
-		{Server{"name", "user", "host", 22}, "ssh -p 22 user@host # name"},
+		{Server{"", "", "", 0}, "ssh -p 0 @"},
+		{Server{"name", "", "", 0}, "ssh -p 0 @"},
+		{Server{"", "user", "", 0}, "ssh -p 0 user@"},
+		{Server{"", "", "host", 0}, "ssh -p 0 @host"},
+		{Server{"", "", "", 2200}, "ssh -p 2200 @"},
+		{Server{"name", "user", "host", 0}, "ssh -p 0 user@host"},
+		{Server{"name", "user", "host", 22}, "ssh -p 22 user@host"},
 	}
 
 	for _, pair := range list {
@@ -49,11 +49,53 @@ func TestServerConnectionString(t *testing.T) {
 	}
 }
 
+func TestServerUploadString(t *testing.T) {
+	list := []TestingPair{
+		{Server{"", "", "", 0}, "scp -P 0 file1 @:file2"},
+		{Server{"name", "", "", 0}, "scp -P 0 file1 @:file2"},
+		{Server{"", "user", "", 0}, "scp -P 0 file1 user@:file2"},
+		{Server{"", "", "host", 0}, "scp -P 0 file1 @host:file2"},
+		{Server{"", "", "", 2200}, "scp -P 2200 file1 @:file2"},
+		{Server{"name", "user", "host", 0}, "scp -P 0 file1 user@host:file2"},
+		{Server{"name", "user", "host", 22}, "scp -P 22 file1 user@host:file2"},
+	}
+
+	for _, pair := range list {
+		if pair.server.getUploadString("file1", "file2") != pair.result {
+			t.Error(
+				"expected", pair.result,
+				"got", pair.server.getUploadString("file1", "file2"),
+			)
+		}
+	}
+}
+
+func TestServerDonloadString(t *testing.T) {
+	list := []TestingPair{
+		{Server{"", "", "", 0}, "scp -P 0 @:file1 file2"},
+		{Server{"name", "", "", 0}, "scp -P 0 @:file1 file2"},
+		{Server{"", "user", "", 0}, "scp -P 0 user@:file1 file2"},
+		{Server{"", "", "host", 0}, "scp -P 0 @host:file1 file2"},
+		{Server{"", "", "", 2200}, "scp -P 2200 @:file1 file2"},
+		{Server{"name", "user", "host", 0}, "scp -P 0 user@host:file1 file2"},
+		{Server{"name", "user", "host", 22}, "scp -P 22 user@host:file1 file2"},
+	}
+
+	for _, pair := range list {
+		if pair.server.getDownloadString("file1", "file2") != pair.result {
+			t.Error(
+				"expected", pair.result,
+				"got", pair.server.getDownloadString("file1", "file2"),
+			)
+		}
+	}
+}
+
 func TestServerNormalize(t *testing.T) {
 	list := []TestingPair{
-		{Server{"", "", "", 0}, "ssh -p 22 testuser@ # "},
-		{Server{"", "", "", 22}, "ssh -p 22 testuser@ # "},
-		{Server{"", "", "", 44}, "ssh -p 44 testuser@ # "},
+		{Server{"", "", "", 0}, "ssh -p 22 testuser@"},
+		{Server{"", "", "", 22}, "ssh -p 22 testuser@"},
+		{Server{"", "", "", 44}, "ssh -p 44 testuser@"},
 	}
 
 	for _, pair := range list {
@@ -63,6 +105,35 @@ func TestServerNormalize(t *testing.T) {
 			t.Error(
 				"expected", pair.result,
 				"got", pair.server.getConnectionString(),
+			)
+		}
+	}
+}
+
+func TestServerValidate(t *testing.T) {
+	list := []struct {
+		server  Server
+		isValid bool
+	}{
+		{Server{"", "", "", 0}, false},
+		{Server{"a", "", "", 0}, false},
+		{Server{"", "a", "", 0}, false},
+		{Server{"", "", "a", 0}, false},
+		//
+		{Server{"", "test2", "test3", 0}, false},
+		{Server{"test1", "", "test3", 0}, false},
+		{Server{"test1", "test2", "", 0}, false},
+		//
+		{Server{"test1", "test2", "test3", 0}, true},
+	}
+
+	for _, pair := range list {
+		if (pair.server.validate() == nil) != pair.isValid {
+			t.Error(
+				"failed to validate server:", pair.server.String(),
+				",expected:", pair.isValid,
+				",got:", pair.server.validate() == nil,
+				",err:", pair.server.validate(),
 			)
 		}
 	}

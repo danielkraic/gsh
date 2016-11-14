@@ -1,10 +1,12 @@
 package main
 
 import (
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
+
+	"gopkg.in/yaml.v2"
 )
 
+// read list of servers from yaml config
 func readConfig(configFile string, defaultUsername string, defaultPort uint) ([]Server, error) {
 	fileData, err := ioutil.ReadFile(configFile)
 	if err != nil {
