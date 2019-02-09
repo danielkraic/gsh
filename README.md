@@ -40,6 +40,6 @@ confiruration file `~/.config/gsh.yml`
 gsh -h
 # select server and connect using ssh
 gsh
-# select server and print ssh commanf to connect
+# select server and print ssh command to connect
 gsh -p
 ```
