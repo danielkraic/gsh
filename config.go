@@ -11,7 +11,7 @@ func readConfig(configFile string, defaultUsername string, defaultPort uint) ([]
 	fileData, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		return nil, err
-	}
+  }
 
 	var servers []Server
 	if err = yaml.Unmarshal(fileData, &servers); err != nil {
