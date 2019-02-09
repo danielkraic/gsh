@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/danielkraic/gsh.svg?branch=master)](https://travis-ci.org/danielkraic/gsh)
 
-quickly get ssh/scp commands
+quickly ssh connect
 
 ## Requirements
 
@@ -38,28 +38,8 @@ confiruration file `~/.config/gsh.yml`
 ```bash
 # print help
 gsh -h
-# list all servers (with ssh command) using default config ~/.config/gsh.yml
+# select server and connect using ssh
+gsh
+# select server and print ssh commanf to connect
 gsh -p
-# list all servers (with ssh command) using custom config file
-gsh -c custom_config.yml -p
-
-# Connect to server (choose server using single pattern)
-gsh myserver1
-# Connect to server (choose server using multiple patterns)
-gsh myserver1 user1
-
-# Upload file to server
-gsh -f src_file.txt -u dest_path.txt myserver1
-
-# Download file from server
-gsh -d remote_path.txt -f dest_file.txt myserver1
-
-# Print ssh command to server (choose server using single pattern)
-gsh -p myserver1
-# Print ssh command to server (choose server using multiple patterns)
-gsh -p myserver1 user1
-# Print scp command to upload file to server
-gsh -p -f src_file.txt -u dest_path.txt myserver1
-# Print scp command to download file from server
-gsh -p -d remote_path.txt -f dest_file.txt myserver1
 ```
