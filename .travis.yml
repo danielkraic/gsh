@@ -4,4 +4,6 @@ go:
   - 1.x
   - master
 
-script: go test
+script:
+  - env GO111MODULE=on go build
+  - env GO111MODULE=on go test
