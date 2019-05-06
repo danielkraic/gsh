@@ -97,3 +97,77 @@ func TestServerValidate(t *testing.T) {
 	}
 }
 
+func TestServerMatch(t *testing.T) {
+	list := []struct {
+		server  Server
+		pattern string
+		matched bool
+	}{
+		{Server{"", "", "", 0}, "", false},
+		//
+		{Server{"", "", "", 0}, "a", false},
+		{Server{"a", "", "", 0}, "a", true},
+		{Server{"", "a", "", 0}, "a", true},
+		{Server{"", "", "a", 0}, "a", true},
+		{Server{"", "", "a", 0}, "a", true},
+		//
+		{Server{"test1", "test2", "test3", 0}, "test1", true},
+		{Server{"test1", "test2", "test3", 0}, "test2", true},
+		{Server{"test1", "test2", "test3", 0}, "test3", true},
+		{Server{"test1", "test2", "test3", 0}, "test4", false},
+	}
+
+	for _, pair := range list {
+		if pair.server.match(pair.pattern) != pair.matched {
+			t.Error(
+				"failed to match server:", pair.server.String(),
+				",pattern:", pair.pattern,
+				",expected:", pair.matched,
+				",got:", !pair.matched,
+			)
+		}
+	}
+}
+
+func TestServerMatchAll(t *testing.T) {
+	list := []struct {
+		server   Server
+		patterns []string
+		matched  bool
+	}{
+		{Server{"", "", "", 0}, []string{""}, false},
+		//
+		{Server{"", "", "", 0}, []string{"a"}, false},
+		{Server{"a", "", "", 0}, []string{"a"}, true},
+		{Server{"", "a", "", 0}, []string{"a"}, true},
+		{Server{"", "", "a", 0}, []string{"a"}, true},
+		{Server{"", "", "a", 0}, []string{"a"}, true},
+		//
+		{Server{"", "", "aba", 0}, []string{"a"}, true},
+		{Server{"", "", "aba", 0}, []string{"b"}, true},
+		//
+		{Server{"test1", "test2", "test3", 0}, []string{"test1"}, true},
+		{Server{"test1", "test2", "test3", 0}, []string{"test2"}, true},
+		{Server{"test1", "test2", "test3", 0}, []string{"test3"}, true},
+		{Server{"test1", "test2", "test3", 0}, []string{"test4"}, false},
+		//
+		{Server{"test1", "test2", "test3", 0}, []string{"test", "1"}, true},
+		{Server{"test1", "test2", "test3", 0}, []string{"test", "2"}, true},
+		{Server{"test1", "test2", "test3", 0}, []string{"test", "3"}, true},
+		{Server{"test1", "test2", "test3", 0}, []string{"test", "4"}, false},
+		//
+		{Server{"test1", "test2", "test3", 0}, []string{"", "test1"}, false},
+		{Server{"test1", "test2", "test3", 0}, []string{"test1", ""}, false},
+	}
+
+	for _, pair := range list {
+		if pair.server.matchAll(pair.patterns) != pair.matched {
+			t.Error(
+				"failed to match server:", pair.server.String(),
+				",patterns:", pair.patterns,
+				",expected:", pair.matched,
+				",got:", !pair.matched,
+			)
+		}
+	}
+}
