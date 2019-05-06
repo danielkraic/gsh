@@ -8,11 +8,10 @@ import (
 
 // conect to server
 func connect(server Server, printOnly bool) {
-  color.Green(fmt.Sprintf("%s: %s", server.Name, server.getConnectionString()))
-  if printOnly {
-    return
-  }
+	color.Green(fmt.Sprintf("%s: %s", server.Name, server.getConnectionString()))
+	if printOnly {
+		return
+	}
 
-  server.connect()
+	server.connect()
 }
-

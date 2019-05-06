@@ -18,7 +18,7 @@ go get -v github.com/danielkraic/gsh
 
 ## Configuration
 
-confiruration file `~/.config/gsh.yml` 
+confiruration file `~/.config/gsh.yml`
 
 ```yaml
 ---
@@ -40,6 +40,8 @@ confiruration file `~/.config/gsh.yml`
 gsh -h
 # select server and connect using ssh
 gsh
+# select server with pattern and connect using ssh
+gsh server1 user1
 # select server and print ssh command to connect
 gsh -p
 ```

@@ -19,7 +19,7 @@ func (s *Server) String() string {
 	return fmt.Sprintf("%s, %s@%s:%d", s.Name, s.Username, s.Hostname, s.Port)
 }
 
-// normalize server params (set default port and username)
+// normalize sets default port and username if empty
 func (s *Server) normalize(defaultUsername string, defaultPort uint) {
 	if len(s.Username) == 0 {
 		s.Username = defaultUsername
@@ -49,6 +49,22 @@ func (s *Server) validate() error {
 	}
 
 	return nil
+}
+
+// match server name, hostname and username against pattern
+func (s *Server) match(pattern string) bool {
+	return pattern != "" && (strings.Contains(s.Name, pattern) || strings.Contains(s.Hostname, pattern) || strings.Contains(s.Username, pattern))
+}
+
+// match server name, hostname and username against all patterns
+func (s *Server) matchAll(patterns []string) bool {
+	for _, p := range patterns {
+		if s.match(p) == false {
+			return false
+		}
+	}
+
+	return true
 }
 
 // create ssh command
