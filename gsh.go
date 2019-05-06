@@ -7,6 +7,7 @@ import (
 	"path"
 
 	"github.com/alexflint/go-arg"
+	"github.com/fatih/color"
 	"github.com/ktr0731/go-fuzzyfinder"
 )
 
@@ -48,6 +49,11 @@ func main() {
 		}
 	}
 
+	if len(matched) == 0 {
+		color.Red("no server matched")
+		return
+	}
+
 	if len(matched) == 1 {
 		connect(matched[0], args.PrintOnly)
 		return
@@ -57,7 +63,10 @@ func main() {
 		return fmt.Sprintf("%s", matched[i].String())
 	})
 	if err != nil {
-		log.Fatalf("Failed to find server: %s", err)
+		if err != fuzzyfinder.ErrAbort {
+			log.Fatalf("Failed to find server: %s", err)
+		}
+		return
 	}
 
 	connect(matched[idx], args.PrintOnly)
